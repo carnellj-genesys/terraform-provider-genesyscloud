@@ -9,8 +9,8 @@ import (
 const resourceName = "genesyscloud_simple_routing_queue"
 
 func SetRegistrar(l registrar.Registrar) {
-	l.RegisterResource(resourceName, ResourceSimpleRoutingQueue())
 	l.RegisterDataSource(resourceName, DataSourceSimpleRoutingQueue())
+	l.RegisterResource(resourceName, ResourceSimpleRoutingQueue())
 }
 
 func ResourceSimpleRoutingQueue() *schema.Resource {

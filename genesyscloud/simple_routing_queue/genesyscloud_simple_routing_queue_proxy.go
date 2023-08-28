@@ -7,9 +7,9 @@ import (
 )
 
 type createRoutingQueueFunc func(context.Context, *simpleRoutingQueueProxy, *platformclientv2.Createqueuerequest) (*platformclientv2.Queue, *platformclientv2.APIResponse, error)
-type getRoutingQueueFunc func(context.Context, *simpleRoutingQueueProxy, string) (*platformclientv2.Queue, *platformclientv2.APIResponse, error)
+type getRoutingQueueFunc func(context.Context, *simpleRoutingQueueProxy, string) (*platformclientv2.Queue, int, error)
 type updateRoutingQueueFunc func(context.Context, *simpleRoutingQueueProxy, string, *platformclientv2.Queuerequest) (*platformclientv2.Queue, *platformclientv2.APIResponse, error)
-type deleteRoutingQueueFunc func(context.Context, *simpleRoutingQueueProxy, string, bool) (*platformclientv2.APIResponse, error)
+type deleteRoutingQueueFunc func(context.Context, *simpleRoutingQueueProxy, string) (*platformclientv2.APIResponse, error)
 type getRoutingQueueIdByNameFunc func(context.Context, *simpleRoutingQueueProxy, string) (id string, retryable bool, err error)
 
 var internalProxy *simpleRoutingQueueProxy
@@ -51,7 +51,7 @@ func (p *simpleRoutingQueueProxy) createRoutingQueue(ctx context.Context, queue 
 }
 
 // getRoutingQueue retrieves a Genesys Cloud Routing Queue by ID
-func (p *simpleRoutingQueueProxy) getRoutingQueue(ctx context.Context, id string) (*platformclientv2.Queue, *platformclientv2.APIResponse, error) {
+func (p *simpleRoutingQueueProxy) getRoutingQueue(ctx context.Context, id string) (*platformclientv2.Queue, int, error) {
 	return p.getRoutingQueueAttr(ctx, p, id)
 }
 
@@ -66,8 +66,8 @@ func (p *simpleRoutingQueueProxy) updateRoutingQueue(ctx context.Context, id str
 }
 
 // deleteRoutingQueue deletes a Genesys Cloud Routing Queue
-func (p *simpleRoutingQueueProxy) deleteRoutingQueue(ctx context.Context, id string, forceDelete bool) (*platformclientv2.APIResponse, error) {
-	return p.deleteRoutingQueueAttr(ctx, p, id, forceDelete)
+func (p *simpleRoutingQueueProxy) deleteRoutingQueue(ctx context.Context, id string) (*platformclientv2.APIResponse, error) {
+	return p.deleteRoutingQueueAttr(ctx, p, id)
 }
 
 // createRoutingQueueFn is an implementation function for creating a Genesys Cloud Routing Queue
@@ -79,12 +79,12 @@ func createRoutingQueueFn(ctx context.Context, proxy *simpleRoutingQueueProxy, q
 	return sdkQueue, response, err
 }
 
-func getRoutingQueueFn(ctx context.Context, proxy *simpleRoutingQueueProxy, id string) (*platformclientv2.Queue, *platformclientv2.APIResponse, error) {
+func getRoutingQueueFn(ctx context.Context, proxy *simpleRoutingQueueProxy, id string) (*platformclientv2.Queue, int, error) {
 	queue, response, err := proxy.routingApi.GetRoutingQueue(id)
 	if err != nil {
-		return nil, nil, fmt.Errorf("failed to get routing queue by id '%s': %v", id, err)
+		return nil, response.StatusCode, fmt.Errorf("failed to get routing queue by id '%s': %v", id, err)
 	}
-	return queue, response, err
+	return queue, 0, err
 }
 
 func getRoutingQueueIdByNameFn(ctx context.Context, proxy *simpleRoutingQueueProxy, name string) (string, bool, error) {
@@ -115,8 +115,8 @@ func updateRoutingQueueFn(ctx context.Context, proxy *simpleRoutingQueueProxy, i
 	return queue, response, err
 }
 
-func deleteRoutingQueueFn(ctx context.Context, proxy *simpleRoutingQueueProxy, id string, forceDelete bool) (*platformclientv2.APIResponse, error) {
-	response, err := proxy.routingApi.DeleteRoutingQueue(id, forceDelete)
+func deleteRoutingQueueFn(ctx context.Context, proxy *simpleRoutingQueueProxy, id string) (*platformclientv2.APIResponse, error) {
+	response, err := proxy.routingApi.DeleteRoutingQueue(id, true)
 	if err != nil {
 		return nil, fmt.Errorf("failed to delete queue '%s': %v", id, err)
 	}

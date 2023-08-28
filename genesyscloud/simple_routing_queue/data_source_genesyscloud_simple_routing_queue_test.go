@@ -20,14 +20,14 @@ func TestAccDataSourceSimpleRoutingQueue(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:          func() { gcloud.TestAccPreCheck(t) },
-		ProviderFactories: gcloud.GetProviderFactories(nil, nil),
+		ProviderFactories: gcloud.GetProviderFactories(providerResources, providerDataSources),
 		Steps: []resource.TestStep{
 			{
 				Config: generateSimpleRoutingQueueResource(
 					resourceId,
 					simpleQueueName,
 					"null",
-					"null",
+					"false",
 				) + generateSimpleRoutingQueueDataSource(
 					dataSourceId,
 					simpleQueueName,
