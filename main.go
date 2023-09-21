@@ -75,22 +75,23 @@ type RegisterInstance struct {
 
 func registerResources() {
 
-	reg_instance := &RegisterInstance{}
+	regInstance := &RegisterInstance{}
 
-	pat.SetRegistrar(reg_instance)
+	pat.SetRegistrar(regInstance)
 
-	ob.SetRegistrar(reg_instance)
-	gcloud.SetRegistrar(reg_instance)
-	obAttemptLimit.SetRegistrar(reg_instance)
-	obContactList.SetRegistrar(reg_instance)
-	obRuleset.SetRegistrar(reg_instance)
-	scripts.SetRegistrar(reg_instance)
-	externalContacts.SetRegistrar(reg_instance)
+	ob.SetRegistrar(regInstance)
+	gcloud.SetRegistrar(regInstance)
+	obAttemptLimit.SetRegistrar(regInstance)
+	obContactList.SetRegistrar(regInstance)
+	obRuleset.SetRegistrar(regInstance)
+	scripts.SetRegistrar(regInstance)
+	externalContacts.SetRegistrar(regInstance)
 	resourceExporter.SetRegisterExporter(resourceExporters)
 
+	/* CREATE-TODO: Import the simple_routing_queue package and call it's SetRegistrar function, as above. */
+
 	// setting resources for Use cases  like TF export where provider is used in resource classes.
-	//tfexp.GetRegistrarresources()
-	tfexp.SetRegistrar(reg_instance)
+	tfexp.SetRegistrar(regInstance)
 	registrar.SetResources(providerResources, providerDataSources)
 
 }
