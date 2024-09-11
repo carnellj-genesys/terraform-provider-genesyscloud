@@ -116,13 +116,15 @@ func updateSimpleRoutingQueue(ctx context.Context, d *schema.ResourceData, meta 
 	// CREATE-TODO 2: Create variables for each field in our schema.ResourceData object
 
 	// CREATE-TODO	3: Create a queue struct using the Genesys Cloud platform go sdk
-
-	log.Println("Updating simple routing queue")
+	// ** NOTE: We are using Queuerequest this time - not Createqueuerequest **
+	// Here is the source code for the struct we will be using - https://github.com/MyPureCloud/platform-client-sdk-go/blob/master/platformclientv2/Queuerequest.go
+	// (Remember - we only need to worry about the three fields defined in our schema)
 
 	// CREATE-TODO 4: Call the proxy function updateSimpleRoutingQueue(context.Context, id string, *platformclientv2.Queuerequest) to update our queue
 	// We should handle our error and response objects the same way as in the createSimpleRoutingQueue method above.
 	// We won't be needing the returned Queue object, so an underscore can go in that variables place. If we were to define it, Go would complain that we're not using it,
 	// so this is our way of telling Go that we don't need it.
+	log.Println("Updating simple routing queue")
 
 	log.Println("Updated simple routing queue")
 	return readSimpleRoutingQueue(ctx, d, meta)
