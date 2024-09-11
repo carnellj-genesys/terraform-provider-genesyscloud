@@ -30,12 +30,15 @@ func dataSourceSimpleRoutingQueueRead(ctx context.Context, d *schema.ResourceDat
 
 	log.Printf("Finding queue by name '%s'", name)
 	return util.WithRetries(ctx, 15*time.Second, func() *retry.RetryError {
+		log.Printf(`Retrieving ID of simple routing queue "%s"`, name)
 		// CREATE-TODO 4: Call to the proxy function proxyInstance.getRoutingQueueIdByName(context.Context, string), passing ctx and our name variable
 		// This function returns values in the following order: queueId (string), response (*platformclientv2.APIResponse), err (error), retryable (bool)
 		queueId, resp, err, retryable := proxy.getSimpleRoutingQueueIdByName(ctx, name)
 
-		// CREATE-TODO 5: If the error is not nil, and retryable equals false, return a resource.NonRetryableError
-		// to let the user know that an error occurred. If retryable is true, return a resource.RetryableError
+		// CREATE-TODO 5: If the error is not nil, and retryable equals false, return a retry.NonRetryableError
+		// to let the user know that an error occurred. If retryable is true, return a retry.RetryableError
+		// We use the BuildWithRetriesApiDiagnosticError to provide as much info to the user as possible
+		// E.g. return retry.RetryableError(util.BuildWithRetriesApiDiagnosticError(resourceName, fmt.Sprintf("No queue found with name %s", name), resp))
 		if err != nil {
 			if !retryable {
 				return retry.NonRetryableError(util.BuildWithRetriesApiDiagnosticError(resourceName, err.Error(), resp))
